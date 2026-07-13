@@ -33,9 +33,11 @@ _ANAHTAR_ADLARI = {
     "anthropic": "ANTHROPIC_API_KEY",
     "gemini": "GEMINI_API_KEY",
 }
+# Gemini'de sürümlü adlar (örn. gemini-2.5-flash-lite) zamanla emekliye ayrılıp
+# 404 verebildiği için her zaman güncel modele işaret eden "-latest" takma adı kullanılır.
 _VARSAYILAN_MODELLER = {
     "anthropic": "claude-haiku-4-5-20251001",
-    "gemini": "gemini-2.5-flash-lite",
+    "gemini": "gemini-flash-lite-latest",
 }
 
 

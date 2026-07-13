@@ -90,8 +90,9 @@ Tüm ayarlar `config.yaml`'dan okunur; kodda gömülü feed/eşik yoktur.
 - **`summary.provider`** — `"gemini"` (varsayılan; ücretsiz katmanı vardır) ya da
   `"anthropic"`. Her sağlayıcı kendi ortam değişkenindeki anahtarı kullanır
   (`GEMINI_API_KEY` / `ANTHROPIC_API_KEY`).
-- **`summary.model`** — Gemini için `gemini-2.5-flash-lite` (ücretsiz katmanda
-  en yüksek günlük kota), Anthropic için `claude-haiku-4-5-20251001` önerilir.
+- **`summary.model`** — Gemini için `gemini-flash-lite-latest` önerilir (her
+  zaman güncel flash-lite modeline işaret eden takma ad; sürümlü adlar emekliye
+  ayrılınca 404 verebiliyor). Anthropic için `claude-haiku-4-5-20251001`.
 - **`summary.max_articles`** — maliyet/kota kontrolü: en fazla kaç içeriğe özet
   çıkarılır; fazlası ham özetle gönderilir. Gemini'nin dakikadaki istek sınırına
   takılmamak için ardışık çağrılar arasında ~4 sn beklenir.
