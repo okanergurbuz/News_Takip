@@ -1,0 +1,33 @@
+# Günlük bülten: feed'leri tarar, özetler ve Discord'a gönderir.
+# Cron UTC çalışır; "0 6 * * *" İzmir'de (UTC+3) 09:00'a denk gelir.
+name: gunluk-bulten
+
+on:
+  schedule:
+    - cron: "0 6 * * *"       # Her gün 06:00 UTC (İzmir'de 09:00, UTC+3)
+  workflow_dispatch: {}        # Manuel tetikleme
+
+permissions:
+  contents: write             # seen.json'ı geri commit'lemek için
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Bülteni çalıştır
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python main.py
+      - name: seen.json'ı commit'le
+        run: |
+          git config user.name "digest-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/seen.json
+          git diff --staged --quiet || git commit -m "chore: günlük seen güncellemesi [skip ci]"
+          git push

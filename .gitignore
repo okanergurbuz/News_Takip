@@ -1,0 +1,18 @@
+# Ortam değişkenleri (sırlar asla commit'lenmez)
+.env
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Editör / işletim sistemi
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Claude Code yerel ayarları
+.claude/settings.local.json
