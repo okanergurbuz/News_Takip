@@ -30,7 +30,8 @@ summary:
   enabled: true                # false ise feed'in kendi özeti kullanılır
   provider: "gemini"           # "gemini" (ücretsiz katman, GEMINI_API_KEY) ya da
                                # "anthropic" (ANTHROPIC_API_KEY)
-  model: "gemini-2.5-flash-lite"   # anthropic için: "claude-haiku-4-5-20251001"
+  model: "gemini-flash-lite-latest"   # her zaman güncel flash-lite'a işaret eden
+                                      # takma ad; anthropic için: "claude-haiku-4-5-20251001"
   max_articles: 25             # Maliyet/kota kontrolü: en fazla kaç içeriğe özet çıkarılır
   language: "Türkçe"
   sentences: "2-3"
