@@ -1,9 +1,10 @@
 # 📬 Haber / Blog Özetleyici Bülten
 
 Takip ettiğiniz siteleri (RSS/Atom feed'leri üzerinden) **günde bir kez** tarayıp
-yeni yayınlanan içerikleri toplayan; her içerik için isteğe bağlı olarak Claude ile
-**2-3 cümlelik Türkçe özet** üreten ve sonucu bir **Discord kanalına** düzenli bülten
-olarak gönderen, **sunucusuz** (GitHub Actions üzerinde çalışan) bir sistem.
+yeni yayınlanan içerikleri toplayan; her içerik için isteğe bağlı olarak bir LLM ile
+(Google **Gemini** — ücretsiz katman — ya da Anthropic **Claude**) **2-3 cümlelik
+Türkçe özet** üreten ve sonucu bir **Discord kanalına** düzenli bülten olarak
+gönderen, **sunucusuz** (GitHub Actions üzerinde çalışan) bir sistem.
 
 ## Nasıl çalışır?
 
@@ -47,7 +48,11 @@ Repo → **Settings → Secrets and variables → Actions → New repository sec
 | Secret | Zorunlu mu? | Açıklama |
 |---|---|---|
 | `DISCORD_WEBHOOK_URL` | ✅ Evet | Discord webhook adresi |
-| `ANTHROPIC_API_KEY` | ❌ Hayır | LLM özeti için. Yoksa/`summary.enabled: false` ise bülten feed'lerin kendi özetleriyle gönderilir |
+| `GEMINI_API_KEY` | ❌ Hayır | Türkçe LLM özeti için (`provider: "gemini"` — varsayılan). https://aistudio.google.com adresinden **ücretsiz** alınır, kredi kartı gerekmez |
+| `ANTHROPIC_API_KEY` | ❌ Hayır | `provider: "anthropic"` seçilirse kullanılır |
+
+Seçili sağlayıcının anahtarı yoksa ya da `summary.enabled: false` ise bülten
+feed'lerin kendi (İngilizce) özetleriyle gönderilir; sistem yine tam çalışır.
 
 ### 4. Bitti 🎉
 
@@ -82,9 +87,14 @@ Tüm ayarlar `config.yaml`'dan okunur; kodda gömülü feed/eşik yoktur.
 - **`filter.lookback_hours`** — son kaç saatte yayınlanan içerikler alınır (varsayılan 24).
 - **`filter.max_items_total` / `max_per_feed`** — bülten boyut sınırları.
 - **`summary.enabled`** — `false` yapılırsa LLM hiç çağrılmaz.
-- **`summary.model`** — `claude-haiku-4-5-20251001` (hızlı ve ucuz; bu iş için doğru tercih).
-- **`summary.max_articles`** — maliyet kontrolü: en fazla kaç içeriğe özet çıkarılır;
-  fazlası ham özetle gönderilir.
+- **`summary.provider`** — `"gemini"` (varsayılan; ücretsiz katmanı vardır) ya da
+  `"anthropic"`. Her sağlayıcı kendi ortam değişkenindeki anahtarı kullanır
+  (`GEMINI_API_KEY` / `ANTHROPIC_API_KEY`).
+- **`summary.model`** — Gemini için `gemini-2.5-flash-lite` (ücretsiz katmanda
+  en yüksek günlük kota), Anthropic için `claude-haiku-4-5-20251001` önerilir.
+- **`summary.max_articles`** — maliyet/kota kontrolü: en fazla kaç içeriğe özet
+  çıkarılır; fazlası ham özetle gönderilir. Gemini'nin dakikadaki istek sınırına
+  takılmamak için ardışık çağrılar arasında ~4 sn beklenir.
 - **`discord.username` / `embed_color`** — bültenin görünümü.
 
 ## Dosya yapısı
@@ -98,7 +108,7 @@ Tüm ayarlar `config.yaml`'dan okunur; kodda gömülü feed/eşik yoktur.
 │   └── seen.json               # Görülen içerik ID'leri (Actions commit'ler)
 ├── src/
 │   ├── feeds.py                # Feed çekme + ayrıştırma + tarih/dedupe süzgeci
-│   ├── summarizer.py           # Anthropic API ile Türkçe özet (düz HTTP)
+│   ├── summarizer.py           # Gemini/Anthropic ile Türkçe özet (düz HTTP)
 │   ├── discord_notifier.py     # Embed oluşturma + webhook POST
 │   ├── storage.py              # Storage arayüzü + JSONStorage (+ Supabase iskeleti)
 │   └── models.py               # dataclass: Article
@@ -122,8 +132,9 @@ Tüm ayarlar `config.yaml`'dan okunur; kodda gömülü feed/eşik yoktur.
 - **Discord sınırları:** mesaj başına ≤ 10 embed, embed açıklaması ≤ 4096
   karakter. Sığmayan bülten birden fazla mesaja bölünür (arada ~1 sn bekleme);
   429 yanıtında `retry_after` kadar beklenip yeniden denenir.
-- **LLM reddi (`stop_reason: "refusal"`)** ya da API hatası durumunda o içerik
-  feed'in ham özetiyle gönderilir.
+- **LLM reddi/filtresi** (Anthropic'te `stop_reason: "refusal"`, Gemini'de boş
+  `candidates`) ya da API hatası durumunda o içerik feed'in ham özetiyle
+  gönderilir. 429 (hız sınırı) yanıtında 20 sn beklenip bir kez yeniden denenir.
 
 ## Faz 2: Supabase (opsiyonel, henüz etkin değil)
 
