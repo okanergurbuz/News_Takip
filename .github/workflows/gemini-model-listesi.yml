@@ -1,0 +1,31 @@
+# Geçici teşhis: GEMINI_API_KEY ile kullanılabilir modelleri listeler.
+# Doğru model adı belirlendikten sonra bu dosya silinecek.
+name: gemini-model-listesi
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  listele:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kullanılabilir Gemini modellerini listele
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          curl -s -H "x-goog-api-key: $GEMINI_API_KEY" \
+            "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200" \
+            -o modeller.json
+          python3 - <<'EOF'
+          import json
+          veri = json.load(open("modeller.json"))
+          modeller = veri.get("models")
+          if not modeller:
+              print("Model listesi alınamadı, ham yanıt:")
+              print(json.dumps(veri, indent=2)[:1500])
+          else:
+              for m in modeller:
+                  yontemler = ",".join(m.get("supportedGenerationMethods", []))
+                  if "generateContent" in yontemler:
+                      print(f"{m['name']}")
+          EOF
