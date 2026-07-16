@@ -9,12 +9,21 @@ feeds:
   - name: "Hacker News (Front Page)"
     url: "https://hnrss.org/frontpage"
     category: "Teknoloji"
-  - name: "Electrek"
-    url: "https://electrek.co/feed/"
-    category: "EV / Otomotiv"
-  - name: "InsideEVs"
-    url: "https://insideevs.com/rss/articles/all/"
-    category: "EV / Otomotiv"
+  - name: "Otonom Haber"
+    url: "https://otonomhaber.com/feed"
+    category: "🇹🇷 Türkiye EV / Otomotiv"
+  - name: "Google News (elektrikli araç)"
+    url: "https://news.google.com/rss/search?q=%22elektrikli%20ara%C3%A7%22&hl=tr&gl=TR&ceid=TR:tr"
+    category: "🇹🇷 Türkiye EV / Otomotiv"
+  - name: "NTV Otomobil"
+    url: "https://www.ntv.com.tr/otomobil.rss"
+    category: "🇹🇷 Türkiye EV / Otomotiv"
+  - name: "CNN Türk Otomobil"
+    url: "https://www.cnnturk.com/feed/rss/otomobil/news"
+    category: "🇹🇷 Türkiye EV / Otomotiv"
+  - name: "ShiftDelete Otomobil"
+    url: "https://shiftdelete.net/otomobil/feed"
+    category: "🇹🇷 Türkiye EV / Otomotiv"
   - name: "Next.js Blog"
     url: "https://nextjs.org/feed.xml"
     category: "Geliştirici"
@@ -22,7 +31,7 @@ feeds:
 # Süzme
 filter:
   lookback_hours: 24           # Son kaç saatteki içerikler alınır
-  max_items_total: 30          # Bültende toplam en fazla içerik
+  max_items_total: 40          # Bültende toplam en fazla içerik
   max_per_feed: 8              # Feed başına en fazla içerik
 
 # LLM özet
@@ -32,7 +41,7 @@ summary:
                                # "anthropic" (ANTHROPIC_API_KEY)
   model: "gemini-flash-lite-latest"   # her zaman güncel flash-lite'a işaret eden
                                       # takma ad; anthropic için: "claude-haiku-4-5-20251001"
-  max_articles: 25             # Maliyet/kota kontrolü: en fazla kaç içeriğe özet çıkarılır
+  max_articles: 40             # Maliyet/kota kontrolü: en fazla kaç içeriğe özet çıkarılır
   language: "Türkçe"
   sentences: "2-3"
 
