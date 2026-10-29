@@ -168,3 +168,7 @@ Böylece geçmiş silinmeden birikir ve ileride arşiv/dashboard kurulabilir.
 - Günün en önemli 3 haberini LLM'e seçtirip başa koyma.
 - E-posta seçeneği (notifier arayüzünü soyutlama).
 - Haftalık "en çok okunan/öne çıkan" derlemesi.
+
+## Lisans
+
+[MIT](LICENSE)
